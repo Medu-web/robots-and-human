@@ -35,126 +35,45 @@
         }
 
         @keyframes popIn {
-            from { opacity: 0; transform: scale(0.8) translateY(20px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
         }
 
-        .icon-bg {
-            background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(4px);
-            border: 2px solid white;
-            pointer-events: none; 
-        }
-
-        /* カスタムスクロールバー */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #fefce8;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #fcd34d;
-            border-radius: 10px;
+        .robot-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 1rem;
         }
     </style>
 </head>
-<body class="text-slate-800 antialiased min-h-screen p-4 md:p-10">
+<body class="p-4 md:p-8">
 
-    <div class="max-w-6xl mx-auto">
-        <!-- ヘッダー -->
-        <div class="text-center mb-12">
-            <h1 class="text-5xl md:text-6xl font-black text-orange-600 mb-6 drop-shadow-sm">
-                いろいろな ロボット
-            </h1>
-            <div class="inline-block bg-white px-8 py-3 rounded-full border-4 border-orange-200 shadow-md">
-                <p class="text-xl md:text-2xl font-bold text-orange-700">
-                    世の中（よのなか）には いろいろな ロボットが いるよ！
-                </p>
-            </div>
-        </div>
+    <header class="max-w-6xl mx-auto text-center mb-12">
+        <h1 class="text-4xl md:text-6xl font-black text-slate-800 mb-4 tracking-tighter">
+            いろいろな<span class="text-blue-500">ロボット</span>ずかん
+        </h1>
+        <p class="text-lg md:text-xl text-slate-600 font-bold">みらいの まちで はたらく ロボットたち</p>
+    </header>
 
-        <!-- メイングリッド -->
-        <div id="robot-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            <!-- JSでカードを生成 -->
-        </div>
+    <main id="robot-grid" class="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+        <!-- ロボットカードがここに挿入されます -->
+    </main>
 
-        <!-- ロボットの定義セクション -->
-        <div class="mt-16 bg-white rounded-[3rem] p-8 md:p-12 border-8 border-orange-100 shadow-xl relative overflow-hidden">
-            <div class="absolute top-0 right-0 p-4 opacity-10">
-                <span class="text-9xl">⚙️</span>
-            </div>
+    <!-- モーダル詳細 -->
+    <div id="modal-overlay" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+        <div id="modal-content" class="bg-white w-full max-w-2xl rounded-[3rem] overflow-hidden shadow-2xl modal-enter relative">
+            <button onclick="closeModal()" class="absolute top-6 right-6 w-12 h-12 bg-slate-100 hover:bg-slate-200 rounded-full flex items-center justify-center text-2xl transition-colors z-10">✕</button>
             
-            <h2 class="text-3xl font-black text-orange-500 mb-10 flex items-center gap-3">
-                <span class="bg-orange-500 text-white w-10 h-10 rounded-full flex items-center justify-center text-xl font-black">？</span>
-                ロボットって なに？
-            </h2>
+            <div id="modal-img-container" class="aspect-video flex items-center justify-center p-8">
+                <!-- ここに画像が表示されます -->
+                <img id="modal-img" src="" alt="" class="max-h-full rounded-2xl shadow-lg">
+            </div>
 
-            <div class="grid md:grid-cols-3 gap-8 relative z-10">
-                <!-- センサー -->
-                <div class="bg-blue-50 p-8 rounded-[2rem] border-4 border-blue-100 text-center">
-                    <div class="text-6xl mb-4">👁️</div>
-                    <h3 class="text-2xl font-black text-blue-700 mb-2">目（センサー）</h3>
-                    <p class="font-bold text-blue-600/80">まわりの ようすを 知（し）るよ。</p>
-                </div>
-                <!-- コンピューター -->
-                <div class="bg-pink-50 p-8 rounded-[2rem] border-4 border-pink-100 text-center">
-                    <div class="text-6xl mb-4">🧠</div>
-                    <h3 class="text-2xl font-black text-pink-700 mb-2">頭（コンピューター）</h3>
-                    <p class="font-bold text-pink-600/80">どう動（うご）くか 考えるよ。</p>
-                </div>
-                <!-- モーター -->
-                <div class="bg-green-50 p-8 rounded-[2rem] border-4 border-green-100 text-center">
-                    <div class="text-6xl mb-4">💪</div>
-                    <h3 class="text-2xl font-black text-green-700 mb-2">体（モーター）</h3>
-                    <p class="font-bold text-green-600/80">力（ちから）づよく 動（うご）くよ。</p>
-                </div>
-            </div>
-            
-            <div class="mt-10 bg-orange-50 p-6 rounded-2xl text-center">
-                <p class="text-xl font-black text-orange-800">
-                    これらを もっている 機械（きかい）が ロボットだよ！
-                </p>
-            </div>
-        </div>
-
-        <!-- 足あと -->
-        <div class="mt-16 text-center text-slate-400 font-bold pb-10">
-            <p>さとう ともまさ「ロボット」の 学習（がくしゅう）しりょう</p>
-        </div>
-    </div>
-
-    <!-- モーダル（詳細画面） -->
-    <div id="modal-overlay" class="fixed inset-0 bg-slate-900/80 hidden items-center justify-center p-4 z-50 backdrop-blur-sm" style="display: none;">
-        <div id="modal-content" class="bg-white rounded-[3rem] max-w-2xl w-full p-8 md:p-12 shadow-2xl relative modal-enter">
-            <button onclick="closeModal()" class="absolute top-6 right-6 w-12 h-12 flex items-center justify-center bg-slate-100 rounded-full text-slate-500 hover:bg-red-100 hover:text-red-500 transition-colors font-bold text-2xl">
-                ✕
-            </button>
-            
-            <div id="modal-category" class="inline-block px-4 py-1 rounded-full text-sm font-black mb-4 tracking-widest bg-slate-100 text-slate-500"></div>
-            <h2 id="modal-name" class="text-4xl font-black mb-8 text-slate-800"></h2>
-            
-            <!-- 写真を入れる場所 -->
-            <div id="modal-img-container" class="rounded-[2rem] p-12 mb-8 flex flex-col items-center justify-center border-4 border-dashed border-slate-200">
-                <div id="modal-icon" class="text-8xl mb-6"></div>
-                <div class="bg-white/80 px-6 py-2 rounded-xl border-2 border-slate-200 shadow-sm text-center">
-                    <p class="text-sm font-black text-slate-400 uppercase tracking-tighter">
-                        ここに 写真（しゃしん）を はめこむ
-                    </p>
-                    <p class="text-[10px] text-slate-300 font-bold mt-1">
-                        
-                    </p>
-                </div>
-            </div>
-            
-            <div class="bg-slate-50 p-8 rounded-[2rem] border-2 border-slate-100">
-                <p id="modal-desc" class="text-xl leading-relaxed font-bold text-slate-700"></p>
-            </div>
-            
-            <div class="mt-10 text-center">
-                <button onclick="closeModal()" class="bg-orange-500 hover:bg-orange-600 text-white text-xl px-12 py-4 rounded-full font-black shadow-lg shadow-orange-200 transition-all transform active:scale-95">
-                    わかった！
-                </button>
+            <div class="p-8 md:p-12">
+                <span id="modal-cat" class="inline-block px-4 py-1 rounded-full text-sm font-bold mb-4 bg-slate-100 text-slate-600">カテゴリー</span>
+                <h2 id="modal-name" class="text-3xl md:text-5xl font-black text-slate-800 mb-6 leading-tight">ロボットのなまえ</h2>
+                <p id="modal-desc" class="text-lg md:text-xl text-slate-600 leading-relaxed font-medium">ロボットのせつめいがここにはいります。</p>
             </div>
         </div>
     </div>
@@ -162,101 +81,83 @@
     <script>
         const robots = [
             {
-                id: 1,
-                name: "おそうじロボット",
-                category: "お家（うち）ではたらく",
-                desc: "へやの中を 自分（じぶん）で 動（うご）いて、ゴミを すいとってくれます。かべに ぶつからないように、センサーで たしかめながら おそうじします。",
-                icon: "🏠",
-                color: "bg-blue-50",
-                badge: "bg-blue-100 text-blue-700"
+                id: 'clean',
+                name: 'おそうじロボ',
+                category: 'いえのなか',
+                desc: 'おうちの ゆかを ピカピカに してくれます。ゴミを みつけるのが とくいです。',
+                image: 'clean.jpg',
+                color: 'bg-blue-100',
+                accent: 'text-blue-600'
             },
             {
-                id: 2,
-                name: "おしゃべりロボット",
-                category: "お家（うち）ではたらく",
-                desc: "みんなの お話を きいたり、クイズを 出（だ）したりしてくれます。",
-                icon: "🤖",
-                color: "bg-pink-50",
-                badge: "bg-pink-100 text-pink-700"
+                id: 'talk',
+                name: 'おしゃべりロボ',
+                category: 'おともだち',
+                desc: 'みんなと おはなしを したり、うたを うたったり します。こころを ポカポカに してくれます。',
+                image: 'talk.jpg',
+                color: 'bg-pink-100',
+                accent: 'text-pink-600'
             },
             {
-                id: 3,
-                name: "はこぶロボット",
-                category: "お店（みせ）や 町（まち）で はたらく",
-                desc: "レストランで、ちゅうもんした お料理（りょうり）を テーブルまで はこんでくれます。",
-                icon: "🍱",
-                color: "bg-orange-50",
-                badge: "bg-orange-100 text-orange-700"
+                id: 'hakobu',
+                name: 'はこぶロボ',
+                category: 'まちのなか',
+                desc: 'おもい にもつを かわりに はこんでくれます。ちからもちで、とっても はやいです。',
+                image: 'hakobu.jpg',
+                color: 'bg-orange-100',
+                accent: 'text-orange-600'
             },
             {
-                id: 4,
-                name: "うけつけロボット",
-                category: "お店（みせ）や 町（まち）で はたらく",
-                desc: "ホテルの 入（い）り口（ぐち）で、お客（きかく）さんに あいさつをして、案内（あんない）をしてくれます。",
-                icon: "💁",
-                color: "bg-green-50",
-                badge: "bg-green-100 text-green-700"
+                id: 'uketuke',
+                name: 'うけつけロボ',
+                category: 'おしごと',
+                desc: 'びょういんや ホテルで、お客さんを 案内（あんない）してくれます。いつも ニコニコ しています。',
+                image: 'uketuke.jpg',
+                color: 'bg-green-100',
+                accent: 'text-green-600'
             },
             {
-                id: 5,
-                name: "つくるロボット",
-                category: "工場（こうじょう）で はたらく",
-                desc: "車（くるま）などの 大（おお）きなものを つくります。人間（にんげん）には おもすぎるものを もちあげたりします。",
-                icon: "🏗️",
-                color: "bg-gray-100",
-                badge: "bg-gray-200 text-gray-700"
+                id: 'jidousha',
+                name: 'つくるロボ',
+                category: 'こうじょう',
+                desc: 'じどうしゃや おもちゃを つくる ロボットです。てさきが とても きよう。',
+                image: 'jidousha.jpg',
+                color: 'bg-purple-100',
+                accent: 'text-purple-600'
             },
             {
-                id: 6,
-                name: "うちゅうのロボット",
-                category: "行（い）けないところで はたらく",
-                desc: "月（つき）や 火星（かせい）にいって、石（いし）を ひろったり、写真を とったりして、宇宙（うちゅう）のなぞを しらべます。",
-                icon: "🚀",
-                color: "bg-indigo-50",
-                badge: "bg-indigo-100 text-indigo-700"
+                id: 'jidori',
+                name: 'うちゅうのロボ',
+                category: 'ぼうけん',
+                desc: 'とおくの ほしに いって、しゃしんを とったり 土（つち）を 調（しら）べたり します。',
+                image: 'jidori.jpg',
+                color: 'bg-indigo-100',
+                accent: 'text-indigo-600'
             },
             {
-                id: 7,
-                name: "海のそこのロボット",
-                category: "行（い）けないところで はたらく",
-                desc: "とても 深（ふか）い 海のそこに もぐって、めずらしい 魚（さかな）を さがしたりします。",
-                icon: "🌊",
-                color: "bg-cyan-50",
-                badge: "bg-cyan-100 text-cyan-700"
+                id: 'kaitei',
+                name: '海のそこロボ',
+                category: 'ぼうけん',
+                desc: '深い（ふかい） 海の そこを およいで、めずらしい お魚（さかな）を みつけます。',
+                image: 'kaitei.jpg',
+                color: 'bg-cyan-100',
+                accent: 'text-cyan-600'
             }
         ];
 
         function init() {
             const grid = document.getElementById('robot-grid');
-            if (!grid) return;
-            grid.innerHTML = '';
-            
             robots.forEach(robot => {
                 const card = document.createElement('div');
-                card.className = `${robot.color} robot-card border-4 border-white rounded-[2.5rem] p-8 shadow-sm relative overflow-hidden`;
-                
-                card.onclick = function() {
-                    openModal(robot);
-                };
+                card.className = `robot-card ${robot.color} rounded-[2.5rem] p-6 flex flex-col items-center text-center`;
+                card.onclick = () => openModal(robot);
                 
                 card.innerHTML = `
-                    <div class="pointer-events-none">
-                        <span class="${robot.badge} text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-tighter mb-4 inline-block">
-                            ${robot.category}
-                        </span>
-                        <div class="icon-bg w-24 h-24 flex items-center justify-center text-5xl mb-6 rounded-3xl mx-auto shadow-inner">
-                            ${robot.icon}
-                        </div>
-                        <h2 class="text-2xl font-black text-center mb-3 text-slate-800">${robot.name}</h2>
-                        <p class="text-sm font-bold leading-relaxed text-slate-500 text-center line-clamp-2">
-                            ${robot.desc}
-                        </p>
-                        <div class="mt-6 flex justify-center">
-                            <div class="bg-white/80 px-5 py-2 rounded-full text-xs font-black text-slate-400 shadow-sm border border-slate-100">
-                                くわしく見る →
-                            </div>
-                        </div>
+                    <div class="w-full aspect-square mb-6 bg-white/50 rounded-3xl overflow-hidden border-4 border-white shadow-inner flex items-center justify-center">
+                        <img src="${robot.image}" alt="${robot.name}" class="robot-image" onerror="this.parentElement.innerHTML='🤖'">
                     </div>
+                    <span class="px-3 py-1 bg-white/80 rounded-full text-xs font-bold ${robot.accent} mb-2 uppercase tracking-wider">${robot.category}</span>
+                    <h3 class="text-2xl font-black text-slate-800">${robot.name}</h3>
                 `;
                 grid.appendChild(card);
             });
@@ -264,21 +165,23 @@
 
         function openModal(robot) {
             const overlay = document.getElementById('modal-overlay');
-            const cat = document.getElementById('modal-category');
+            const cat = document.getElementById('modal-cat');
             const name = document.getElementById('modal-name');
             const desc = document.getElementById('modal-desc');
-            const icon = document.getElementById('modal-icon');
-            const label = document.getElementById('img-label');
+            const img = document.getElementById('modal-img');
             const imgContainer = document.getElementById('modal-img-container');
 
             if (cat) cat.innerText = robot.category;
             if (name) name.innerText = robot.name;
             if (desc) desc.innerText = robot.desc;
-            if (icon) icon.innerText = robot.icon;
-            if (label) label.innerText = robot.name;
+            if (img) {
+                img.src = robot.image;
+                img.alt = robot.name;
+            }
             
             if (imgContainer) {
-                imgContainer.className = `rounded-[2rem] p-12 mb-8 flex flex-col items-center justify-center border-4 border-dashed border-slate-200 ${robot.color}`;
+                // 背景色をロボットに合わせて変更
+                imgContainer.className = `aspect-video flex items-center justify-center p-8 ${robot.color}`;
             }
             
             if (overlay) {
