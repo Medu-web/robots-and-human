@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>いろいろなロボットずかん</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&display=swap');
+        
+        body {
+            font-family: 'Zen Maru Gothic', sans-serif;
+            background-color: #fefce8; /* yellow-50 */
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .robot-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            z-index: 1;
+        }
+
+        .robot-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .robot-card:active {
+            transform: translateY(-2px);
+        }
+
+        .modal-enter {
+            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popIn {
+            from { opacity: 0; transform: scale(0.8) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .icon-bg {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(4px);
+            border: 2px solid white;
+            pointer-events: none; 
+        }
+
+        /* カスタムスクロールバー */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #fefce8;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #fcd34d;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased min-h-screen p-4 md:p-10">
+
+    <div class="max-w-6xl mx-auto">
+        <!-- ヘッダー -->
+        <div class="text-center mb-12">
+            <h1 class="text-5xl md:text-6xl font-black text-orange-600 mb-6 drop-shadow-sm">
+                いろいろな ロボット
+            </h1>
+            <div class="inline-block bg-white px-8 py-3 rounded-full border-4 border-orange-200 shadow-md">
+                <p class="text-xl md:text-2xl font-bold text-orange-700">
+                    世の中（よのなか）には いろいろな ロボットが いるよ！
+                </p>
+            </div>
+        </div>
+
+        <!-- メイングリッド -->
+        <div id="robot-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- JSでカードを生成 -->
+        </div>
+
+        <!-- ロボットの定義セクション -->
+        <div class="mt-16 bg-white rounded-[3rem] p-8 md:p-12 border-8 border-orange-100 shadow-xl relative overflow-hidden">
+            <div class="absolute top-0 right-0 p-4 opacity-10">
+                <span class="text-9xl">⚙️</span>
+            </div>
+            
+            <h2 class="text-3xl font-black text-orange-500 mb-10 flex items-center gap-3">
+                <span class="bg-orange-500 text-white w-10 h-10 rounded-full flex items-center justify-center text-xl font-black">？</span>
+                ロボットって なに？
+            </h2>
+
+            <div class="grid md:grid-cols-3 gap-8 relative z-10">
+                <!-- センサー -->
+                <div class="bg-blue-50 p-8 rounded-[2rem] border-4 border-blue-100 text-center">
+                    <div class="text-6xl mb-4">👁️</div>
+                    <h3 class="text-2xl font-black text-blue-700 mb-2">目（センサー）</h3>
+                    <p class="font-bold text-blue-600/80">まわりの ようすを 知（し）るよ。</p>
+                </div>
+                <!-- コンピューター -->
+                <div class="bg-pink-50 p-8 rounded-[2rem] border-4 border-pink-100 text-center">
+                    <div class="text-6xl mb-4">🧠</div>
+                    <h3 class="text-2xl font-black text-pink-700 mb-2">頭（コンピューター）</h3>
+                    <p class="font-bold text-pink-600/80">どう動（うご）くか 考えるよ。</p>
+                </div>
+                <!-- モーター -->
+                <div class="bg-green-50 p-8 rounded-[2rem] border-4 border-green-100 text-center">
+                    <div class="text-6xl mb-4">💪</div>
+                    <h3 class="text-2xl font-black text-green-700 mb-2">体（モーター）</h3>
+                    <p class="font-bold text-green-600/80">力（ちから）づよく 動（うご）くよ。</p>
+                </div>
+            </div>
+            
+            <div class="mt-10 bg-orange-50 p-6 rounded-2xl text-center">
+                <p class="text-xl font-black text-orange-800">
+                    これらを もっている 機械（きかい）が ロボットだよ！
+                </p>
+            </div>
+        </div>
+
+        <!-- 足あと -->
+        <div class="mt-16 text-center text-slate-400 font-bold pb-10">
+            <p>さとう ともまさ「ロボット」の 学習（がくしゅう）しりょう</p>
+        </div>
+    </div>
+
+    <!-- モーダル（詳細画面） -->
+    <div id="modal-overlay" class="fixed inset-0 bg-slate-900/80 hidden items-center justify-center p-4 z-50 backdrop-blur-sm" style="display: none;">
+        <div id="modal-content" class="bg-white rounded-[3rem] max-w-2xl w-full p-8 md:p-12 shadow-2xl relative modal-enter">
+            <button onclick="closeModal()" class="absolute top-6 right-6 w-12 h-12 flex items-center justify-center bg-slate-100 rounded-full text-slate-500 hover:bg-red-100 hover:text-red-500 transition-colors font-bold text-2xl">
+                ✕
+            </button>
+            
+            <div id="modal-category" class="inline-block px-4 py-1 rounded-full text-sm font-black mb-4 tracking-widest bg-slate-100 text-slate-500"></div>
+            <h2 id="modal-name" class="text-4xl font-black mb-8 text-slate-800"></h2>
+            
+            <!-- 写真を入れる場所 -->
+            <div id="modal-img-container" class="rounded-[2rem] p-12 mb-8 flex flex-col items-center justify-center border-4 border-dashed border-slate-200">
+                <div id="modal-icon" class="text-8xl mb-6"></div>
+                <div class="bg-white/80 px-6 py-2 rounded-xl border-2 border-slate-200 shadow-sm text-center">
+                    <p class="text-sm font-black text-slate-400 uppercase tracking-tighter">
+                        ここに 写真（しゃしん）を はめこむ
+                    </p>
+                    <p class="text-[10px] text-slate-300 font-bold mt-1">
+                        
+                    </p>
+                </div>
+            </div>
+            
+            <div class="bg-slate-50 p-8 rounded-[2rem] border-2 border-slate-100">
+                <p id="modal-desc" class="text-xl leading-relaxed font-bold text-slate-700"></p>
+            </div>
+            
+            <div class="mt-10 text-center">
+                <button onclick="closeModal()" class="bg-orange-500 hover:bg-orange-600 text-white text-xl px-12 py-4 rounded-full font-black shadow-lg shadow-orange-200 transition-all transform active:scale-95">
+                    わかった！
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const robots = [
+            {
+                id: 1,
+                name: "おそうじロボット",
+                category: "お家（うち）ではたらく",
+                desc: "へやの中を 自分（じぶん）で 動（うご）いて、ゴミを すいとってくれます。かべに ぶつからないように、センサーで たしかめながら おそうじします。",
+                icon: "🏠",
+                color: "bg-blue-50",
+                badge: "bg-blue-100 text-blue-700"
+            },
+            {
+                id: 2,
+                name: "おしゃべりロボット",
+                category: "お家（うち）ではたらく",
+                desc: "みんなの お話を きいたり、クイズを 出（だ）したりしてくれます。",
+                icon: "🤖",
+                color: "bg-pink-50",
+                badge: "bg-pink-100 text-pink-700"
+            },
+            {
+                id: 3,
+                name: "はこぶロボット",
+                category: "お店（みせ）や 町（まち）で はたらく",
+                desc: "レストランで、ちゅうもんした お料理（りょうり）を テーブルまで はこんでくれます。",
+                icon: "🍱",
+                color: "bg-orange-50",
+                badge: "bg-orange-100 text-orange-700"
+            },
+            {
+                id: 4,
+                name: "うけつけロボット",
+                category: "お店（みせ）や 町（まち）で はたらく",
+                desc: "ホテルの 入（い）り口（ぐち）で、お客（きかく）さんに あいさつをして、案内（あんない）をしてくれます。",
+                icon: "💁",
+                color: "bg-green-50",
+                badge: "bg-green-100 text-green-700"
+            },
+            {
+                id: 5,
+                name: "つくるロボット",
+                category: "工場（こうじょう）で はたらく",
+                desc: "車（くるま）などの 大（おお）きなものを つくります。人間（にんげん）には おもすぎるものを もちあげたりします。",
+                icon: "🏗️",
+                color: "bg-gray-100",
+                badge: "bg-gray-200 text-gray-700"
+            },
+            {
+                id: 6,
+                name: "うちゅうのロボット",
+                category: "行（い）けないところで はたらく",
+                desc: "月（つき）や 火星（かせい）にいって、石（いし）を ひろったり、写真を とったりして、宇宙（うちゅう）のなぞを しらべます。",
+                icon: "🚀",
+                color: "bg-indigo-50",
+                badge: "bg-indigo-100 text-indigo-700"
+            },
+            {
+                id: 7,
+                name: "海のそこのロボット",
+                category: "行（い）けないところで はたらく",
+                desc: "とても 深（ふか）い 海のそこに もぐって、めずらしい 魚（さかな）を さがしたりします。",
+                icon: "🌊",
+                color: "bg-cyan-50",
+                badge: "bg-cyan-100 text-cyan-700"
+            }
+        ];
+
+        function init() {
+            const grid = document.getElementById('robot-grid');
+            if (!grid) return;
+            grid.innerHTML = '';
+            
+            robots.forEach(robot => {
+                const card = document.createElement('div');
+                card.className = `${robot.color} robot-card border-4 border-white rounded-[2.5rem] p-8 shadow-sm relative overflow-hidden`;
+                
+                card.onclick = function() {
+                    openModal(robot);
+                };
+                
+                card.innerHTML = `
+                    <div class="pointer-events-none">
+                        <span class="${robot.badge} text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-tighter mb-4 inline-block">
+                            ${robot.category}
+                        </span>
+                        <div class="icon-bg w-24 h-24 flex items-center justify-center text-5xl mb-6 rounded-3xl mx-auto shadow-inner">
+                            ${robot.icon}
+                        </div>
+                        <h2 class="text-2xl font-black text-center mb-3 text-slate-800">${robot.name}</h2>
+                        <p class="text-sm font-bold leading-relaxed text-slate-500 text-center line-clamp-2">
+                            ${robot.desc}
+                        </p>
+                        <div class="mt-6 flex justify-center">
+                            <div class="bg-white/80 px-5 py-2 rounded-full text-xs font-black text-slate-400 shadow-sm border border-slate-100">
+                                くわしく見る →
+                            </div>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function openModal(robot) {
+            const overlay = document.getElementById('modal-overlay');
+            const cat = document.getElementById('modal-category');
+            const name = document.getElementById('modal-name');
+            const desc = document.getElementById('modal-desc');
+            const icon = document.getElementById('modal-icon');
+            const label = document.getElementById('img-label');
+            const imgContainer = document.getElementById('modal-img-container');
+
+            if (cat) cat.innerText = robot.category;
+            if (name) name.innerText = robot.name;
+            if (desc) desc.innerText = robot.desc;
+            if (icon) icon.innerText = robot.icon;
+            if (label) label.innerText = robot.name;
+            
+            if (imgContainer) {
+                imgContainer.className = `rounded-[2rem] p-12 mb-8 flex flex-col items-center justify-center border-4 border-dashed border-slate-200 ${robot.color}`;
+            }
+            
+            if (overlay) {
+                overlay.style.display = 'flex';
+                overlay.classList.remove('hidden');
+            }
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            const overlay = document.getElementById('modal-overlay');
+            if (overlay) {
+                overlay.style.display = 'none';
+                overlay.classList.add('hidden');
+            }
+            document.body.style.overflow = 'auto';
+        }
+
+        document.getElementById('modal-overlay').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+    </script>
+</body>
+</html>
